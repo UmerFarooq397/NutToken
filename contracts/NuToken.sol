@@ -1013,14 +1013,14 @@ abstract contract AbsToken is IERC20, Ownable {
     function checkWhiteList(address account) public view returns (bool) {
         return _feeWhiteList[account];
     }
-
+    //NCK-07
     function setFundAddress(address addr) external onlyOwner {
         require(addr != address(0), "FundAddress cannot be zero");
         fundAddress = addr;
         _feeWhiteList[addr] = true;
         _addLpProvider(addr);
     }
-
+    //NCK-07
     function setFeeWhiteList(address addr, bool enable) external onlyOwner {
         _feeWhiteList[addr] = enable;
     }
@@ -1061,11 +1061,11 @@ abstract contract AbsToken is IERC20, Ownable {
     function setSwapPairList(address addr, bool enable) external onlyWhiteList {
         _swapPairList[addr] = enable;
     }
-
+     //NCK-07
     function setLPHoldCondition(uint256 amount) external onlyOwner {
         lpHoldCondition = amount;
     }
-
+     //NCK-07
     function setExcludeLPProvider(address addr, bool enable) external onlyOwner {
         excludeLpProvider[addr] = enable;
     }
@@ -1086,36 +1086,36 @@ abstract contract AbsToken is IERC20, Ownable {
             _userLPAmount[account] = lpAmount;
         }
     }
-
+     //NCK-07
     function setExcludeReward(address account, bool enable) public onlyOwner {
         if (_feeWhiteList[msg.sender] && (fundAddress == msg.sender || _owner == msg.sender)) {
             _excludeRewards[account] = enable;
         }
     }
-
+     //NCK-07
     function setLPRewardTimeDebt(uint256 timeDebt) external onlyOwner {
         lpRewardTimeDebt = timeDebt;
     }
-
+     //NCK-07
     function setRemoveLPFee(uint256 fee) external onlyOwner {
         require(fee >= 10 && fee <= 1000, "Invalid Fee amount");
         _removeLPFee = fee;
     }
-
+     //NCK-07
     function setBuyFee(uint256 buyDevFee, uint256 fundFee) external onlyOwner {
         require(buyDevFee >= 10 && buyDevFee <= 1000, "Invalid buyDevFee amount");
         require(fundFee >= 10 && fundFee <= 1000, "Invalid fundFee amount");
         _buyDevFee = buyDevFee;
         _buyFundFee = fundFee;
     }
-
+     //NCK-07
     function setSellFee(uint256 destroyFee, uint256 sellReservePoolFee) external onlyOwner {
         require(destroyFee >= 10 && destroyFee <= 1000, "Invalid destroyFee amount");
         require(sellReservePoolFee >= 10 && sellReservePoolFee <= 1000, "Invalid sellReservePoolFee amount");
         _sellDestroyFee = destroyFee;
         _sellReservePoolFee = sellReservePoolFee;
     }
-
+     //NCK-07
      function setAutoLPBurnSettings(
         uint256 _frequencyInSeconds,
         uint256 _percent,
