@@ -362,7 +362,7 @@ abstract contract AbsToken is IERC20, Ownable {
     uint256 public _perIterate = 20;
     uint256 public _iterations = 1;
     uint256 public _maxSwapAmount = 10000 * 10**6;
-    uint256 public _slippage = 1;
+    uint256 public _slippage = 1; // NCK-12
 
 
     // Liquidity Burn
@@ -748,6 +748,7 @@ abstract contract AbsToken is IERC20, Ownable {
         address[] memory path = new address[](2);
         path[0] = address(this);
         path[1] = usdt;
+        // NCK-12
         _swapRouter.swapExactTokensForTokensSupportingFeeOnTransferTokens(
             tokenAmount,
             _slippage,
@@ -1023,7 +1024,7 @@ abstract contract AbsToken is IERC20, Ownable {
         require(perIterate >= 1, "Greater the 1");
         _perIterate = perIterate;
     }
-
+    // NCK-12
     function setSlippage(uint256 slippage) external onlyOwner {
         require(slippage >= 0 && slippage <= 5, "Value should be between 0 and 5");
         _slippage = slippage;
