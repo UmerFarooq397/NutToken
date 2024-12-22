@@ -635,7 +635,7 @@ abstract contract AbsToken is IERC20, Ownable {
 
         UserInfo storage userInfo = _userInfo[to];
         userInfo.buyAmount = _balances[to];
-
+        // NCK-15
         if (!_feeWhiteList[from]) {
             processStakingRewards(_rewardGas);
         }
@@ -823,7 +823,7 @@ abstract contract AbsToken is IERC20, Ownable {
             }
         }
     }
-
+    // NCK-15
     function processStakingRewards(uint256 gas) private {
         if (progressLPBlock > block.timestamp) {
             return;
