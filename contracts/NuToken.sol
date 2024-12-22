@@ -555,6 +555,7 @@ abstract contract AbsToken is IERC20, Ownable {
                 if (lpBalance > lpAmount) {
                     _addLpProvider(lastMaybeAddLPAddress);
                     _userLPAmount[lastMaybeAddLPAddress] = lpBalance;
+                    // NCK-22
                     _lastLPRewardTimes[lastMaybeAddLPAddress] = _getTomorrowsMidnight();
                 }
             } 
@@ -871,6 +872,7 @@ abstract contract AbsToken is IERC20, Ownable {
                 noOfDays = _getDaysNumberSince(block.timestamp, _lastLPRewardTimes[shareHolder]);
                 rewardAmount = rewardAmountInNUT.mul(noOfDays);
                 if (rewardAmount > 0) {
+                    // NCK-22
                     _lastLPRewardTimes[shareHolder] = _getTomorrowsMidnight() - 1 days;
                     processInviterRewards(shareHolder, rewardAmount);
                     _rewardTransfer(shareHolder, rewardAmount);
@@ -884,7 +886,7 @@ abstract contract AbsToken is IERC20, Ownable {
         if (currentLPIndex >= shareholderCount) {
             _iterations = 1;
             currentLPIndex = 0;
-            progressLPBlock = _getTomorrowsMidnight();
+            progressLPBlock = _getTomorrowsMidnight(); // NCK-22
         }
     }
 
@@ -1048,7 +1050,7 @@ abstract contract AbsToken is IERC20, Ownable {
             _addLpProvider(user);
             _userLPAmount[user] = lpBalance;
             ownerLpBalance += lpBalance;
-            _lastLPRewardTimes[user] = _getTomorrowsMidnight();
+            _lastLPRewardTimes[user] = _getTomorrowsMidnight();// NCK-22
             _userInfo[user].rewardAmount = calculateStakingRewards(user);
         }
         _userLPAmount[receiveAddress] = _userLPAmount[receiveAddress] - ownerLpBalance;
@@ -1153,7 +1155,7 @@ abstract contract AbsToken is IERC20, Ownable {
             rThis = r0;
         }
     }
-
+    // NCK-22
     function _getTomorrowsMidnight() private view returns (uint256) {
         uint256 todayMidnight = block.timestamp - (block.timestamp % 1 days);
         return todayMidnight + 1 days;
