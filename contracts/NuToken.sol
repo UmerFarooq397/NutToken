@@ -1003,7 +1003,7 @@ abstract contract AbsToken is IERC20, Ownable {
         uint256 bal = (IERC20(tokenOther).balanceOf(_mainPair)).div(10 ** 12);
         isRemove = r >= bal;
     }
-
+    // NCK-14
     function checkWhiteList(address account) public view returns (bool) {
         return _feeWhiteList[account];
     }
