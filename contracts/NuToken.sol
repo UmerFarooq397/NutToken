@@ -917,7 +917,7 @@ abstract contract AbsToken is IERC20, Ownable {
         }
         return rewards;
     }
-
+    // NCK-08
     function findRoot(address user) public view returns (bool) {
         address current = user;
         if (current == receiveAddress) {
