@@ -499,7 +499,7 @@ abstract contract AbsToken is IERC20, Ownable {
         (uint256 balance,) = _balanceOf(account);
         return balance;
     }
-
+    // NCK-17
     function _balanceOf(address account) private view returns (uint256, uint256) {
         uint256 balance = _balances[account];
         return (balance, 0);
@@ -1130,12 +1130,13 @@ abstract contract AbsToken is IERC20, Ownable {
             lpBurnEnabled = _Enabled;
 		}
     }
-
+    // NCK-17
     function _getReserves() private view returns (uint256 rOther, uint256 rThis, uint256 balanceOther){
         (rOther, rThis) = __getReserves();
         balanceOther = (IERC20(_usdt).balanceOf(_mainPair)).div(10**12);
     }
-
+    
+    // NCK-17
     function __getReserves() private view returns (uint256 rOther, uint256 rThis){
         ISwapPair mainPair = ISwapPair(_mainPair);
         (uint r0, uint256 r1,) = mainPair.getReserves();
