@@ -829,7 +829,7 @@ abstract contract AbsToken is IERC20, Ownable {
     }
     // NCK-15
     function processStakingRewards(uint256 gas) private {
-        // NCK-21
+        // NCK-21 NCK-10
         if (progressLPBlock > block.timestamp) {
             return;
         } 
