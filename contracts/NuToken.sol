@@ -75,7 +75,7 @@ abstract contract Ownable {
 }
 
 contract TokenDistributor {
-     address public _owner;
+    address public immutable _owner;
     constructor (address token, address mainContract) {
         _owner = msg.sender;
         IERC20(token).approve(msg.sender, ~uint256(0));
@@ -349,9 +349,9 @@ abstract contract AbsToken is IERC20, Ownable {
 
 
     // Addresses
-    address public receiveAddress;
+    address public immutable receiveAddress;
     address public fundAddress;
-    address public devAddress;
+    address public immutable devAddress;
 
     // Trade Management
     uint256 public _buyDevFee = 50;
@@ -390,8 +390,8 @@ abstract contract AbsToken is IERC20, Ownable {
     // Token Metadata
     string private _name;
     string private _symbol;
-    uint8 private _decimals;
-    uint256 private _tTotal;
+    uint8 private immutable _decimals;
+    uint256 private immutable _tTotal;
     bool private inSwap;
 
     ISwapRouter public immutable _swapRouter;
