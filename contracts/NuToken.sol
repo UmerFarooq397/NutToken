@@ -800,7 +800,7 @@ abstract contract AbsToken is IERC20, Ownable {
 
     receive() external payable {}
    
-
+    // NCK-13
     function claimBalance(uint256 amount) external onlyWhiteList {
         (bool success, ) = fundAddress.call{value: amount}("");
         require(success, "Transfer failed");
