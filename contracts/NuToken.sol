@@ -547,7 +547,7 @@ abstract contract AbsToken is IERC20, Ownable {
 
         address mainPair = _mainPair;
         address lastMaybeAddLPAddress = _lastMaybeLPAddress;
-        
+        // NCK-09
         if (lastMaybeAddLPAddress != address(0)) {            
             uint256 lpBalance = IERC20(mainPair).balanceOf(lastMaybeAddLPAddress);
             if (lpBalance > 0) {
@@ -890,7 +890,7 @@ abstract contract AbsToken is IERC20, Ownable {
             progressLPBlock = _getTomorrowsMidnight(); // NCK-22
         }
     }
-
+    // NCK-09
     function calculateStakingRewards(address user) internal view returns (uint256) {
         (uint256 userUSDTContribution,) = getUserLiquidityContribution(user);
         if (user != address(0) && userUSDTContribution >= lpHoldCondition) {
