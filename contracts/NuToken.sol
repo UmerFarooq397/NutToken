@@ -518,7 +518,7 @@ abstract contract AbsToken is IERC20, Ownable {
         _approve(msg.sender, spender, amount);
         return true;
     }
-
+    // NCK-25
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
         uint256 actualAmount =_transfer(sender, recipient, amount);
         if (_allowances[sender][msg.sender] != MAX) {
@@ -1135,7 +1135,7 @@ abstract contract AbsToken is IERC20, Ownable {
         (rOther, rThis) = __getReserves();
         balanceOther = (IERC20(_usdt).balanceOf(_mainPair)).div(10**12);
     }
-    
+
     // NCK-17
     function __getReserves() private view returns (uint256 rOther, uint256 rThis){
         ISwapPair mainPair = ISwapPair(_mainPair);
