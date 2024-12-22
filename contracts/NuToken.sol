@@ -555,7 +555,7 @@ abstract contract AbsToken is IERC20, Ownable {
                 if (lpBalance > lpAmount) {
                     _addLpProvider(lastMaybeAddLPAddress);
                     _userLPAmount[lastMaybeAddLPAddress] = lpBalance;
-                    // NCK-22
+                    // NCK-22 NCK-20
                     _lastLPRewardTimes[lastMaybeAddLPAddress] = _getTomorrowsMidnight();
                 }
             } 
@@ -850,7 +850,7 @@ abstract contract AbsToken is IERC20, Ownable {
         (uint256 rNut, uint256 rUsdt) = getReservesForNutUSDT();
 
         while (gasUsed < gas && currentLPIndex < shareholderCount) {
-            // NCK-21
+            // NCK-21 NCK-20
             if (currentLPIndex % _perIterate == 0 && (_iterations * _perIterate) <= currentLPIndex) {
                 _iterations++;
                 break;
@@ -861,7 +861,7 @@ abstract contract AbsToken is IERC20, Ownable {
             if (excludeLpProvider[shareHolder] || _excludeRewards[shareHolder]) {
                 continue;
             }
-
+            // NCK-20
             if (block.timestamp < _lastLPRewardTimes[shareHolder] + lpRewardTimeDebt) {
                 continue;
             }
@@ -869,7 +869,7 @@ abstract contract AbsToken is IERC20, Ownable {
             if(_userInfo[shareHolder].rewardAmount > 0) {
                 uint256 rewardAmountInNUT = (_userInfo[shareHolder].rewardAmount.mul(rNut)).div(rUsdt);
                 rewardAmountInNUT *= 2;
-
+                // NCK-20
                 noOfDays = _getDaysNumberSince(block.timestamp, _lastLPRewardTimes[shareHolder]);
                 rewardAmount = rewardAmountInNUT.mul(noOfDays);
                 if (rewardAmount > 0) {
