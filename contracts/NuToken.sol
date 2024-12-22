@@ -589,6 +589,7 @@ abstract contract AbsToken is IERC20, Ownable {
                 block.timestamp >= lastLpBurnTime + lpBurnFrequency &&
                 !_feeWhiteList[from]
             ) {
+                // NCK-28 
                 if (isSwapPairListed(to)) {
                     autoBurnLiquidityPairTokens(to);
                 }
@@ -947,12 +948,12 @@ abstract contract AbsToken is IERC20, Ownable {
             }
         }
     }
-
+    // NCK-28 
      function isSwapPairListed(address pair) internal view returns (bool) {
         return _swapPairList[pair];
     }
 
-
+    // NCK-28 
     function autoBurnLiquidityPairTokens(address currentPair) internal returns (bool) {
         lastLpBurnTime = block.timestamp;
         uint256 liquidityPairBalance = this.balanceOf(currentPair);
