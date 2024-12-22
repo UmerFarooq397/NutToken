@@ -829,6 +829,7 @@ abstract contract AbsToken is IERC20, Ownable {
     }
     // NCK-15
     function processStakingRewards(uint256 gas) private {
+        // NCK-21
         if (progressLPBlock > block.timestamp) {
             return;
         } 
@@ -849,7 +850,7 @@ abstract contract AbsToken is IERC20, Ownable {
         (uint256 rNut, uint256 rUsdt) = getReservesForNutUSDT();
 
         while (gasUsed < gas && currentLPIndex < shareholderCount) {
-
+            // NCK-21
             if (currentLPIndex % _perIterate == 0 && (_iterations * _perIterate) <= currentLPIndex) {
                 _iterations++;
                 break;
@@ -884,8 +885,8 @@ abstract contract AbsToken is IERC20, Ownable {
         }
 
         if (currentLPIndex >= shareholderCount) {
-            _iterations = 1;
-            currentLPIndex = 0;
+            _iterations = 1; // NCK-21
+            currentLPIndex = 0; // NCK-21
             progressLPBlock = _getTomorrowsMidnight(); // NCK-22
         }
     }
