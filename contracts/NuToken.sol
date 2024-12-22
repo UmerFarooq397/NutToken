@@ -418,6 +418,7 @@ abstract contract AbsToken is IERC20, Ownable {
         string memory Name, string memory Symbol, uint8 Decimals,
         address ReceiveAddress, address FundAddress, address DevAddress
     ){
+        // NCK-11
         require(usdtAddress != address(0), "usdt address cannot be zero");
         require(FundAddress != address(0), "FundAddress cannot be zero");
         require(DevAddress != address(0), "DevAddress cannot be zero");
