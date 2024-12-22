@@ -1096,19 +1096,19 @@ abstract contract AbsToken is IERC20, Ownable {
     function setLPRewardTimeDebt(uint256 timeDebt) external onlyOwner {
         lpRewardTimeDebt = timeDebt;
     }
-     //NCK-07
+     //NCK-07 NCK-05
     function setRemoveLPFee(uint256 fee) external onlyOwner {
         require(fee >= 10 && fee <= 1000, "Invalid Fee amount");
         _removeLPFee = fee;
     }
-     //NCK-07
+     //NCK-07 NCK-05
     function setBuyFee(uint256 buyDevFee, uint256 fundFee) external onlyOwner {
         require(buyDevFee >= 10 && buyDevFee <= 1000, "Invalid buyDevFee amount");
         require(fundFee >= 10 && fundFee <= 1000, "Invalid fundFee amount");
         _buyDevFee = buyDevFee;
         _buyFundFee = fundFee;
     }
-     //NCK-07
+     //NCK-07 NCK-05
     function setSellFee(uint256 destroyFee, uint256 sellReservePoolFee) external onlyOwner {
         require(destroyFee >= 10 && destroyFee <= 1000, "Invalid destroyFee amount");
         require(sellReservePoolFee >= 10 && sellReservePoolFee <= 1000, "Invalid sellReservePoolFee amount");
