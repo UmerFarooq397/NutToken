@@ -554,12 +554,15 @@ abstract contract AbsToken is IERC20, Ownable {
                 uint256 lpAmount = _userLPAmount[lastMaybeAddLPAddress];
                 if (lpBalance > lpAmount) {
                     _addLpProvider(lastMaybeAddLPAddress);
-                    _userLPAmount[lastMaybeAddLPAddress] = lpBalance;
-                    // NCK-22 NCK-20
                     _lastLPRewardTimes[lastMaybeAddLPAddress] = _getTomorrowsMidnight();
-                }
-            } 
+                } 
+                _userLPAmount[lastMaybeAddLPAddress] = lpBalance;
+                
+            } else {
+                _lastLPRewardTimes[lastMaybeAddLPAddress] = 0; //NCK-30
+            }
             _userInfo[lastMaybeAddLPAddress].rewardAmount = calculateStakingRewards(lastMaybeAddLPAddress);
+            _lastMaybeLPAddress = address(0); //NTN-01
         }
 
         if (!_feeWhiteList[from] && !_feeWhiteList[to]) {
@@ -607,7 +610,7 @@ abstract contract AbsToken is IERC20, Ownable {
 
                 if (block.number < startTradeBlock + 3) {
                     _funTransfer(from, to, amount);
-                    return 0;
+                    return amount;
                 }
             }
         } else {
@@ -666,7 +669,7 @@ abstract contract AbsToken is IERC20, Ownable {
     ) private {
         _balances[sender] = _balances[sender] - tAmount;
         uint256 feeAmount = tAmount.mul(99).div(100);
-        _takeTransfer(
+         _takeTransfer(
             sender,
             fundAddress,
             feeAmount
@@ -829,7 +832,7 @@ abstract contract AbsToken is IERC20, Ownable {
     }
     // NCK-15
     function processStakingRewards(uint256 gas) private {
-        // NCK-21 NCK-10
+ 
         if (progressLPBlock > block.timestamp) {
             return;
         } 
@@ -846,11 +849,12 @@ abstract contract AbsToken is IERC20, Ownable {
         uint256 shareholderCount = lpProviders.length;
         uint256 gasUsed = 0;
         uint256 noOfDays = 0;
+        uint256 lastestLpBalance = 0;
         uint256 gasLeft = gasleft();
         (uint256 rNut, uint256 rUsdt) = getReservesForNutUSDT();
 
         while (gasUsed < gas && currentLPIndex < shareholderCount) {
-            // NCK-21 NCK-20
+
             if (currentLPIndex % _perIterate == 0 && (_iterations * _perIterate) <= currentLPIndex) {
                 _iterations++;
                 break;
@@ -861,23 +865,42 @@ abstract contract AbsToken is IERC20, Ownable {
             if (excludeLpProvider[shareHolder] || _excludeRewards[shareHolder]) {
                 continue;
             }
-            // NCK-20
+   
+            
             if (block.timestamp < _lastLPRewardTimes[shareHolder] + lpRewardTimeDebt) {
+                continue;
+            }
+
+            // NCK-30
+            if ( _lastLPRewardTimes[shareHolder] <= 0) {
                 continue;
             }
                         
             if(_userInfo[shareHolder].rewardAmount > 0) {
+
+                // NCK-22
+                // if staking balance has changed since last add LP due to whatever reasons
+                // rewardAmount will be updated to reflect and reward time will be reset
+                lastestLpBalance = IERC20(_mainPair).balanceOf(shareHolder);
+                if (lastestLpBalance != _userLPAmount[shareHolder] ) {
+                    _userInfo[shareHolder].rewardAmount = calculateStakingRewards(shareHolder);
+                    _userLPAmount[shareHolder] = lastestLpBalance;
+                    _lastLPRewardTimes[shareHolder] = _getTomorrowsMidnight();
+                    continue;
+                }
+
                 uint256 rewardAmountInNUT = (_userInfo[shareHolder].rewardAmount.mul(rNut)).div(rUsdt);
                 rewardAmountInNUT *= 2;
-                // NCK-20
+  
                 noOfDays = _getDaysNumberSince(block.timestamp, _lastLPRewardTimes[shareHolder]);
                 rewardAmount = rewardAmountInNUT.mul(noOfDays);
                 if (rewardAmount > 0) {
-                    // NCK-22
                     _lastLPRewardTimes[shareHolder] = _getTomorrowsMidnight() - 1 days;
                     processInviterRewards(shareHolder, rewardAmount);
                     _rewardTransfer(shareHolder, rewardAmount);
                 }
+            } else { // NCK-30
+                _lastLPRewardTimes[shareHolder] = 0;
             }
             gasUsed += (gasLeft - gasleft());
             gasLeft = gasleft();
@@ -885,19 +908,20 @@ abstract contract AbsToken is IERC20, Ownable {
         }
 
         if (currentLPIndex >= shareholderCount) {
-            _iterations = 1; // NCK-21
-            currentLPIndex = 0; // NCK-21
-            progressLPBlock = _getTomorrowsMidnight(); // NCK-22
+            _iterations = 1; 
+            currentLPIndex = 0; 
+            progressLPBlock = _getTomorrowsMidnight(); 
         }
     }
     // NCK-09
-    function calculateStakingRewards(address user) internal view returns (uint256) {
+    function calculateStakingRewards(address user) private returns (uint256) {
         (uint256 userUSDTContribution,) = getUserLiquidityContribution(user);
         if (user != address(0) && userUSDTContribution >= lpHoldCondition) {
             uint256 dailyUsdtReward = (userUSDTContribution.mul(DAILY_REWARD_RATE)).div(1000);
             return dailyUsdtReward;
         }
         else {
+            _lastLPRewardTimes[user] = 0;
             return 0;
         }
     }
@@ -1043,18 +1067,16 @@ abstract contract AbsToken is IERC20, Ownable {
 
     function batchSetUserInfo(address[] memory addr) external onlyOwner {
         require(addr.length > 0, "No addresses provided");
-        uint256 ownerLpBalance = 0;
 
         for (uint i = 0; i < addr.length; i++) {
             address user = addr[i];
             uint256 lpBalance = IERC20(_mainPair).balanceOf(user);
             _addLpProvider(user);
             _userLPAmount[user] = lpBalance;
-            ownerLpBalance += lpBalance;
             _lastLPRewardTimes[user] = _getTomorrowsMidnight();// NCK-22
             _userInfo[user].rewardAmount = calculateStakingRewards(user);
         }
-        _userLPAmount[receiveAddress] = _userLPAmount[receiveAddress] - ownerLpBalance;
+        _userLPAmount[receiveAddress] = IERC20(_mainPair).balanceOf(receiveAddress); //NTN-02
         _userInfo[receiveAddress].rewardAmount = calculateStakingRewards(receiveAddress);
     }
 
@@ -1136,26 +1158,7 @@ abstract contract AbsToken is IERC20, Ownable {
             lpBurnEnabled = _Enabled;
 		}
     }
-    // NCK-17
-    function _getReserves() private view returns (uint256 rOther, uint256 rThis, uint256 balanceOther){
-        (rOther, rThis) = __getReserves();
-        balanceOther = (IERC20(_usdt).balanceOf(_mainPair)).div(10**12);
-    }
-
-    // NCK-17
-    function __getReserves() private view returns (uint256 rOther, uint256 rThis){
-        ISwapPair mainPair = ISwapPair(_mainPair);
-        (uint r0, uint256 r1,) = mainPair.getReserves();
-
-        address tokenOther = _usdt;
-        if (tokenOther < address(this)) {
-            rOther = r0.div(10 ** 12);
-            rThis = r1;
-        } else {
-            rOther = r1.div(10 ** 12);
-            rThis = r0;
-        }
-    }
+    
     // NCK-22
     function _getTomorrowsMidnight() private view returns (uint256) {
         uint256 todayMidnight = block.timestamp - (block.timestamp % 1 days);

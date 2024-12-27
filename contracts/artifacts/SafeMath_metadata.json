@@ -1,0 +1,45 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/NuToken.sol": "SafeMath"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/NuToken.sol": {
+			"keccak256": "0xc7270ac4ca8b566ccae26f7cda22b4170cf2d9a54e78a2e72225d001d88250fe",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c0b7b9dd5b158d3018ec56072d16e29cb215663f08ce09d65ea27cc7c83d1688",
+				"dweb:/ipfs/QmZKsc24yuQr5QkBAKGUR1zAthgpSsbdYayPuZeikitWcb"
+			]
+		}
+	},
+	"version": 1
+}
