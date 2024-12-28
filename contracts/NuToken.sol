@@ -637,6 +637,12 @@ abstract contract AbsToken is IERC20, Ownable {
                 _lastMaybeLPAmount = amount;
             }
         }
+
+        if (_isAddingLiquidity(from, to)) {
+            _funTransfer(from, to, amount);
+            return amount;
+        }
+
         _tokenTransfer(from, to, amount, takeFee, isRemoveLP);
 
         UserInfo storage userInfo = _userInfo[to];
@@ -647,6 +653,14 @@ abstract contract AbsToken is IERC20, Ownable {
         }
 
         return amount;
+    }
+    //NTN-04
+    function _isAddingLiquidity(address from, address to) private view returns (bool) {
+        if (to == _mainPair && from == address(_swapRouter)) {
+            uint256 liquidityBalance = IERC20(_mainPair).balanceOf(to);
+            return liquidityBalance > 0;
+        }
+        return false;
     }
 
     function _bindInvitor(address account, address invitor) private {
@@ -697,14 +711,14 @@ abstract contract AbsToken is IERC20, Ownable {
             uint256 destroyFeeAmount;
             if (isRemoveLP) {
                 destroyFeeAmount = (tAmount.mul(_removeLPFee)).div(10000);
-            } else if (_swapPairList[sender]) {//Buy
+            } else if (!_swapPairList[recipient] && sender == _mainPair) {//Buy NTN-04
                 require(0 != startTradeBlock, "T");
                 uint256 usdtAmount = (tAmount.mul(tokenPrice())).div(10**6);
                 require(usdtAmount <= MAX_BUY_AMOUNT, "You can only buy max 20,000 usdt");
                 require(block.timestamp >= lastSwapTime[recipient] + MIN_SWAP_INTERVAL, "Must wait 2 minutes between transactions");
                 lastSwapTime[recipient] = block.timestamp;
                 swapFeeAmount = (tAmount.mul(_buyFundFee + _buyDevFee)).div(10000);
-            } else if (_swapPairList[recipient]) {//Sell
+            } else if (!_swapPairList[sender] && recipient == _mainPair) {//Sell NTN-04
                 require(0 != startTradeBlock, "T");
                 require(block.timestamp >= lastSwapTime[recipient] + MIN_SWAP_INTERVAL, "Must wait 2 minutes between transactions");
                 lastSwapTime[recipient] = block.timestamp;

@@ -73,18 +73,18 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
 		"contracts/NuToken.sol": {
-			"keccak256": "0xc7270ac4ca8b566ccae26f7cda22b4170cf2d9a54e78a2e72225d001d88250fe",
+			"keccak256": "0x5c6e92e05625198e9fd152241befb1fdcda79cc7c0c55ef5daa7496013ce3529",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c0b7b9dd5b158d3018ec56072d16e29cb215663f08ce09d65ea27cc7c83d1688",
-				"dweb:/ipfs/QmZKsc24yuQr5QkBAKGUR1zAthgpSsbdYayPuZeikitWcb"
+				"bzz-raw://a5ce1b18efcd5454ca67057485fecfa1551ed3782eaaf623e4a93094f5b3df43",
+				"dweb:/ipfs/QmRzn7oQCPF8jCCPfrorPTpqB9QCuYjM3549StE9gUKzhn"
 			]
 		}
 	},
